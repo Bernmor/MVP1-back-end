@@ -23,7 +23,7 @@ Esta API serve como back-end para o aplicativo Movie Dashboard. Ele fornece endp
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Bernmor/MVP1-back-end
+   git clone https://github.com/Bernmor/MVP1-back-end.git
    cd movie-dashboard-api
    ```
 
