@@ -94,67 +94,6 @@
         }
       }
     },
-    "/users/{userId}": {
-      "get": {
-        "tags": [
-          "users"
-        ],
-        "summary": "Get user by ID",
-        "description": "Returns a single user with their statistics",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "ID of user to return",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "schema": {
-              "$ref": "#/definitions/UserDetail"
-            }
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "users"
-        ],
-        "summary": "Delete user",
-        "description": "Deletes a user",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "ID of user to delete",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User deleted successfully"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      }
-    },
     "/movies": {
       "get": {
         "tags": [
@@ -367,58 +306,6 @@
           },
           "404": {
             "description": "User not found"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "watchlist"
-        ],
-        "summary": "Add movie to watchlist",
-        "description": "Adds a movie to the user's watchlist",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "ID of user to add movie to watchlist for",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Movie ID to add to watchlist",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "movie_id"
-              ],
-              "properties": {
-                "movie_id": {
-                  "type": "integer",
-                  "format": "int64"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Movie added to watchlist"
-          },
-          "400": {
-            "description": "Invalid input"
-          },
-          "404": {
-            "description": "User or movie not found"
           }
         }
       }

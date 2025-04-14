@@ -46,33 +46,6 @@ def get_all_users():
     session.close()
     return jsonify(users_list), 200
 
-
-@app.route('/api/users/<int:user_id>', methods=['GET'])
-def get_user(user_id):
-    """Get a specific user by ID"""
-    session = Session()
-    user = session.query(User).filter(User.id == user_id).first()
-
-    if user:
-        # Get user stats
-        stats = user.get_stats()
-
-        user_data = {
-            "id": user.id,
-            "username": user.username,
-            "created": user.created.isoformat() if user.created else None,
-            "updated": user.updated.isoformat() if user.updated else None,
-            "watchlist_count": stats["watchlist_count"],
-            "watched_count": stats["total_watched"],
-            "stats": stats
-        }
-        session.close()
-        return jsonify(user_data), 200
-
-    session.close()
-    return jsonify({"message": "User not found"}), 404
-
-
 @app.route('/api/users', methods=['POST'])
 def create_user():
     """Create a new user"""
@@ -106,29 +79,6 @@ def create_user():
         session.rollback()
         session.close()
         return jsonify({"message": f"Error creating user: {str(e)}"}), 500
-
-
-@app.route('/api/users/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
-    """Delete a user by ID"""
-    session = Session()
-    user = session.query(User).filter(User.id == user_id).first()
-
-    if not user:
-        session.close()
-        return jsonify({"message": "User not found"}), 404
-
-    try:
-        session.delete(user)
-        session.commit()
-        session.close()
-        return jsonify({"message": f"User {user_id} deleted successfully"}), 200
-
-    except Exception as e:
-        session.rollback()
-        session.close()
-        return jsonify({"message": f"Error deleting user: {str(e)}"}), 500
-
 
 # Rotas Movie
 @app.route('/api/movies', methods=['GET'])
@@ -337,61 +287,6 @@ def get_user_watchlist(user_id):
 
     session.close()
     return jsonify(watchlist), 200
-
-
-@app.route('/api/users/<int:user_id>/watchlist', methods=['POST'])
-def add_to_watchlist(user_id):
-    """Add a movie to user's watchlist"""
-    data = request.get_json()
-
-    if not data or not data.get('movie_id'):
-        return jsonify({"message": "Movie ID is required"}), 400
-
-    movie_id = data.get('movie_id')
-
-    session = Session()
-
-    # Check if user exists
-    user = session.query(User).filter(User.id == user_id).first()
-    if not user:
-        session.close()
-        return jsonify({"message": "User not found"}), 404
-
-    # Check if movie exists
-    movie = session.query(Movies).filter(Movies.id == movie_id).first()
-    if not movie:
-        session.close()
-        return jsonify({"message": "Movie not found"}), 404
-
-    # Check if movie is already in watchlist
-    existing = session.query(UserMovie).filter(
-        UserMovie.user_id == user_id,
-        UserMovie.movie_id == movie_id
-    ).first()
-
-    try:
-        if existing:
-            # Update existing entry
-            existing.in_watchlist = True
-            existing.date_added = datetime.now()
-        else:
-            # Create new entry
-            user_movie = UserMovie(
-                user_id=user_id,
-                movie_id=movie_id,
-                in_watchlist=True
-            )
-            session.add(user_movie)
-
-        session.commit()
-        session.close()
-        return jsonify({"message": "Movie added to watchlist"}), 201
-
-    except Exception as e:
-        session.rollback()
-        session.close()
-        return jsonify({"message": f"Error adding to watchlist: {str(e)}"}), 500
-
 
 @app.route('/api/users/<int:user_id>/watchlist/<int:item_id>', methods=['DELETE'])
 def remove_from_watchlist(user_id, item_id):
