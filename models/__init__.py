@@ -1,3 +1,4 @@
+import os
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
@@ -9,6 +10,10 @@ from models.user_movies import UserMovie
 from models.user import User
 
 # url de acesso ao banco (essa é uma url de acesso ao sqlite local)
+
+if not os.path.exists("./database"):
+    os.makedirs("./database")
+
 db_url = 'sqlite:///database/db.sqlite3'
 
 # cria a engine de conexão com o banco
